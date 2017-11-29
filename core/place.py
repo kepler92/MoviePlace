@@ -10,7 +10,7 @@ class Place:
     def __init__(self):
         self.score_list = None
 
-    def classifier(self, frame, frame_number=None):
+    def classifier(self, frame, log=False):
         result = score.detect(frame, self.net)
         if self.score_list is None:
             self.score_list = result
@@ -18,11 +18,11 @@ class Place:
             self.score_list = \
                 np.concatenate((self.score_list, result), axis=0)
         idx, prob = argkmax(result[0])
-        if frame_number is not None:
-            print("#{0}\t{1}\t{2}\t{3}".format(frame_number, idx, score.get_label_name(idx), prob))
+        if log is True:
+            print("#{0}\t{1}\t{2}".format(idx, score.get_label_name(idx), prob))
         return idx, prob
 
-    def estimate(self, shot_number=None):
+    def estimate(self, log=False):
         if self.score_list is None:
             idx = list()
             prob = None
@@ -30,6 +30,13 @@ class Place:
             result = np.sum(self.score_list, axis=0) / self.score_list.shape[0]
             self.score_list = None
             idx, prob = argkmax(result)
-        if shot_number is not None:
-            print("Shot{0}\t{1}\t{2}\t{3}".format(shot_number, idx, score.get_label_name(idx), prob))
+        if log is True:
+            print("Shot{0}\t{1}\t{2}".format(idx, score.get_label_name(idx), prob))
         return idx, prob
+
+
+def get_label_name(label_id_list):
+    label_name_list = list()
+    for idx in label_id_list:
+        label_name_list.append(score.label_list[idx])
+    return label_name_list

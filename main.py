@@ -20,8 +20,8 @@ if __name__ == "__main__":
     frame_count = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
     frame_move = video_fps
 
-    shot_list = shot.get_shot_list(path=argv[0], capture=cap, log=True)
-    shot_idx = 0
+    shot_list = shot.get_shot_list(path=argv[0], capture=cap)
+    shot_idx = 1
 
     video_width = cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)
     video_height = cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)
@@ -67,7 +67,10 @@ if __name__ == "__main__":
             if detect_flag is False:
                 place_result_idx, place_result_prob = place_classifier.classifier(frame)
 
-            place_result_idx, place_result_prob = place_classifier.estimate(shot_idx + 1)
+            place_result_idx, place_result_prob = place_classifier.estimate()
+            print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
+                    shot_idx, shot_list[shot_idx - 1] / video_fps, (shot_list[shot_idx] - 1) / video_fps,
+                    place_result_idx, place.get_label_name(place_result_idx), place_result_prob))
 
             if frame_next == shot_list[shot_idx]:
                 video_second += 1

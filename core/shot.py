@@ -32,13 +32,13 @@ def get_shot_list(path, capture=None, log=False):
 def __detect_shot_list_by_path(path):
     scene_list = []
     video_framerate, frames_read = scenedetect.detect_scenes_file(path, scene_list, detector_list, quiet_mode=True)
-    scene_list = scene_list + [int(frames_read)]
+    scene_list = [0] + scene_list + [int(frames_read)]
     return scene_list
 
 
 def __detect_shot_list(capture):
     scene_list = []
     frames_read = scenedetect.detect_scenes(capture, scene_list, detector_list, quiet_mode=True)
-    scene_list = scene_list + [int(frames_read)]
+    scene_list = [0] + scene_list + [int(frames_read)]
     capture.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, 0)
     return scene_list

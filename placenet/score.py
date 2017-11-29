@@ -65,13 +65,6 @@ def detect(image, net):
     return np.reshape(prob, (1, prob.shape[0]))
 
 
-def get_label_name(label_id_list):
-    label_name_list = list()
-    for idx in label_id_list:
-        label_name_list.append(label_list[idx])
-    return label_name_list
-
-
 def __detect(image_id, net, iamge_id_path, image_id_txt):
     #count = count + 1
     #fc8_1 = []
