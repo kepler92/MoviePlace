@@ -1,0 +1,2 @@
+PySceneDetect==3.4
+GPU=1 CUDNN=1 pip install darknetpy
