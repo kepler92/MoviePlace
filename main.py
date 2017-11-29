@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 
 from core import shot, object, place
+from utils.argv_parser import *
 
 import cv2
 try:
@@ -11,16 +12,15 @@ except ImportError:
 
 
 if __name__ == "__main__":
-    if (len(sys.argv)) <= 1:
-        print ("Usage: <filename>")
-        exit(0)
+    argv = argv_parser(sys.argv)
 
     cap = cv2.VideoCapture()
-    cap.open(sys.argv[1])
+    cap.open(argv[0])
     video_fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
     frame_count = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
+    frame_move = video_fps
 
-    shot_list = shot.get_shot_list(path=sys.argv[1], capture=cap, log=False)
+    shot_list = shot.get_shot_list(path=argv[0], capture=cap, log=True)
     shot_idx = 0
 
     video_width = cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)
@@ -28,12 +28,12 @@ if __name__ == "__main__":
     video_second = 1
 
     object_list = ['person']
-    object_filter = object.object(width=video_width, height=video_height,
+    object_filter = object.Object(width=video_width, height=video_height,
                                   object_list=object_list, object_max_threshold=0.35,
                                   object_sum_number=5, obj_sum_threshold=0.5)
 
     place_list = []
-    place_classifier = place.place()
+    place_classifier = place.Place()
 
     while cap.isOpened():
         frame_number = int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))
@@ -50,7 +50,7 @@ if __name__ == "__main__":
             place_result_idx, place_result_prob = place_classifier.classifier(frame)
             #print (place_result_idx)
 
-        frame_next = video_fps * video_second
+        frame_next = video_second * frame_move
         cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_next)
 
         if frame_next >= shot_list[shot_idx]:

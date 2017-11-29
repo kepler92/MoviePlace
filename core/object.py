@@ -5,7 +5,7 @@ import numpy as np
 from utils.np_function import argkmax
 
 
-class object:
+class Object:
     net = darknet.net
     meta = darknet.meta
 

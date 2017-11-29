@@ -4,13 +4,13 @@ from placenet import score
 import numpy as np
 from utils.np_function import argkmax, softmax
 
-class place:
+class Place:
     net = score.net
 
     def __init__(self):
         self.score_list = None
 
-    def classifier(self, frame, log=None):
+    def classifier(self, frame, frame_number=None):
         result = score.detect(frame, self.net)
         if self.score_list is None:
             self.score_list = result
@@ -18,11 +18,11 @@ class place:
             self.score_list = \
                 np.concatenate((self.score_list, result), axis=0)
         idx, prob = argkmax(result[0])
-        if log is not None:
-            print("#{0}\t{1}\t{2}".format(log, idx, prob), end=" ")
+        if frame_number is not None:
+            print("#{0}\t{1}\t{2}\t{3}".format(frame_number, idx, score.get_label_name(idx), prob))
         return idx, prob
 
-    def estimate(self, log=None):
+    def estimate(self, shot_number=None):
         if self.score_list is None:
             idx = list()
             prob = None
@@ -30,6 +30,6 @@ class place:
             result = np.sum(self.score_list, axis=0) / self.score_list.shape[0]
             self.score_list = None
             idx, prob = argkmax(result)
-        if log is not None:
-            print("Shot{0}\t{1}\t{2}".format(log, idx, prob))
+        if shot_number is not None:
+            print("Shot{0}\t{1}\t{2}\t{3}".format(shot_number, idx, score.get_label_name(idx), prob))
         return idx, prob

@@ -1,8 +1,7 @@
 import caffe
 import numpy as np
 from scipy.misc import imresize
-import os, string
-from PIL import Image
+import os
 
 import cv2
 try:
@@ -18,6 +17,18 @@ os.chdir(os.path.dirname( os.path.abspath( __file__ ) ))
 MODEL_FILE = './deploy.prototxt'
 PRETRAINED = './fc7_100_iter_300000.caffemodel'
 imagenet_labels_filename = './categories_places365.txt'
+
+
+with open(imagenet_labels_filename, "r") as f:
+    lines = f.readlines()
+    lines_len = len(lines)
+    label_list = [None for x in range(lines_len)]
+    for line in lines:
+        label_catergory, label_id = line.split()
+        label_name = label_catergory.split("/")[-1]
+        label_list[int(label_id)] = label_name
+
+
 caffe.set_mode_gpu()
 caffe.set_device(0)
 net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TEST)
@@ -52,6 +63,13 @@ def detect(image, net):
     #prob = net.blobs['prob'].data[0]
     prob = net.blobs['prob'].data[0]
     return np.reshape(prob, (1, prob.shape[0]))
+
+
+def get_label_name(label_id_list):
+    label_name_list = list()
+    for idx in label_id_list:
+        label_name_list.append(label_list[idx])
+    return label_name_list
 
 
 def __detect(image_id, net, iamge_id_path, image_id_txt):
