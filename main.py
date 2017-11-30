@@ -1,8 +1,8 @@
 from __future__ import print_function
-import sys
+from utils.argv_parser import *
 
 from core import shot, object, place
-from utils.argv_parser import *
+
 
 import cv2
 try:
@@ -12,8 +12,6 @@ except ImportError:
 
 
 if __name__ == "__main__":
-    argv = argv_parser(sys.argv)
-
     cap = cv2.VideoCapture()
     cap.open(argv[0])
     video_fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
@@ -68,6 +66,7 @@ if __name__ == "__main__":
                 place_result_idx, place_result_prob = place_classifier.classifier(frame)
 
             place_result_idx, place_result_prob = place_classifier.estimate()
+
             print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
                     shot_idx, shot_list[shot_idx - 1] / video_fps, (shot_list[shot_idx] - 1) / video_fps,
                     place_result_idx, place.get_label_name(place_result_idx), place_result_prob))

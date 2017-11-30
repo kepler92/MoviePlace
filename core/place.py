@@ -35,11 +35,24 @@ class Place:
             idx = list()
             prob = None
         else:
-            result = np.sum(self.score_list, axis=0) / self.score_list.shape[0]
+            sum_idx, sum_prob, sum_result = self.__estimate_by_sum()
+            mean_idx, mean_prob, mean_result = self.__estimate_by_mean()
+            total_result = (sum_result + mean_result) / 2
+            idx, prob = argkmax(total_result)
             self.score_list = None
-            idx, prob = argkmax(result)
         if log is True:
             print("Shot{0}\t{1}\t{2}".format(idx, get_label_name(idx), prob))
+
         return idx, prob
 
+    def __estimate_by_sum(self):
+        result = np.sum(self.score_list, axis=0) / self.score_list.shape[0]
+        idx, prob = argkmax(result)
+        return idx, prob, result
+
+    def __estimate_by_mean(self):
+        result = np.median(self.score_list, axis=0)
+        result = result / np.sum(result)
+        idx, prob = argkmax(result)
+        return idx, prob, result
 
