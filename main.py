@@ -40,7 +40,7 @@ if __name__ == "__main__":
         frame_second = frame_number / video_fps
 
         res, frame = cap.read()
-        if res is False:
+        if res is False or frame_number == frame_count:
             break
 
         #cv2.imwrite("{0}.jpg".format(frame_number), frame)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
             place_result_idx, place_result_prob = place_classifier.classifier(frame)
             #print (place_result_idx)
 
-        frame_next = video_second * frame_move
+        frame_next = int(round(video_second * frame_move))
         cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_next)
 
         if frame_next >= shot_list[shot_idx]:
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
             res, frame = cap.read()
             if res is False:
-                exit(-1)
+                break
 
             #cv2.imwrite("{0}.jpg".format(shot_end), frame)
 
@@ -78,6 +78,4 @@ if __name__ == "__main__":
 
         else:
             video_second += 1
-
-
 
