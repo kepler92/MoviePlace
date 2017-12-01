@@ -1,5 +1,5 @@
 from __future__ import print_function
-from utils.argv_parser import *
+from utils.argument_parser import *
 
 from core import shot, object, place
 
@@ -12,13 +12,20 @@ except ImportError:
 
 
 if __name__ == "__main__":
+    video_name = args.video_name
+    gpu_id = args.gpu_id
+
     cap = cv2.VideoCapture()
-    cap.open(argv[0])
+    cap.open(video_name)
+
+    if not cap.isOpened():
+        raise Exception("Video file does not open.")
+
     video_fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
     frame_count = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
     frame_move = video_fps
 
-    shot_list = shot.get_shot_list(path=argv[0], capture=cap)
+    shot_list = shot.get_shot_list(path=video_name, capture=cap)
     shot_idx = 1
 
     video_width = cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)
