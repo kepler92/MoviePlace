@@ -56,5 +56,5 @@ class ActionGPU(CustomAction):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('video_name', action=ActionFile, help='Video file name', type=str, metavar='video_name')
-parser.add_argument('-g', action='store', dest='gpu_id', help='GPU ID', type=int, metavar="gpu_id")
+parser.add_argument('-g', action=ActionGPU, dest='gpu_id', help='GPU ID', type=int, metavar="gpu_id")
 args = parser.parse_args()
