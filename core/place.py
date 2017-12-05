@@ -12,6 +12,13 @@ def get_label_name(label_id_list):
     return label_name_list
 
 
+def print_place(shot_idx, shot_start, shot_end, place_result_idx, place_result_label, place_result_prob):
+    output = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
+        shot_idx, shot_start, shot_end, place_result_idx, place_result_label, place_result_prob)
+    print(output)
+    return output
+
+
 class Place:
     net = score.net
 

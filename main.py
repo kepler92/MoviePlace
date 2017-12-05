@@ -2,6 +2,7 @@ from __future__ import print_function
 from utils.argument_parser import *
 
 from core import shot, object, place
+from utils import export_ass
 
 
 import cv2
@@ -40,6 +41,8 @@ if __name__ == "__main__":
     place_list = []
     place_classifier = place.Place()
 
+    place_ass = export_ass.ExportAss(video_name)
+
     while cap.isOpened():
         frame_number = int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))
         frame_second = frame_number / video_fps
@@ -53,14 +56,13 @@ if __name__ == "__main__":
         detect_flag, detect_size = object_filter.detect(frame)
         if detect_flag is False:
             place_result_idx, place_result_prob = place_classifier.classifier(frame)
-            #print (place_result_idx)
 
         frame_next = int(round(video_second * frame_move))
         cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_next)
 
         if frame_next >= shot_list[shot_idx]:
-            shot_end = int(shot_list[shot_idx] - 1)
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, shot_end)
+            frame_shot_end = int(shot_list[shot_idx] - 1)
+            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_shot_end)
 
             res, frame = cap.read()
             if res is False:
@@ -73,10 +75,13 @@ if __name__ == "__main__":
                 place_result_idx, place_result_prob = place_classifier.classifier(frame)
 
             place_result_idx, place_result_prob = place_classifier.estimate()
+            place_result_label = place.get_label_name(place_result_idx)
 
-            print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}".format(
-                    shot_idx, shot_list[shot_idx - 1] / video_fps, (shot_list[shot_idx] - 1) / video_fps,
-                    place_result_idx, place.get_label_name(place_result_idx), place_result_prob))
+            shot_start = shot_list[shot_idx - 1] / video_fps
+            shot_end = (shot_list[shot_idx] - 1) / video_fps
+
+            place.print_place(shot_idx, shot_start, shot_end, place_result_idx, place_result_label, place_result_prob)
+            place_ass.write_datum(shot_start, shot_end, place_result_label, place_result_prob)
 
             if frame_next == shot_list[shot_idx]:
                 video_second += 1
