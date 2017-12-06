@@ -50,8 +50,9 @@ if __name__ == "__main__":
         res, frame = cap.read()
         if res is False or frame_number == frame_count:
             break
+        cv2.resize(src=frame, dsize=(608, 608), dst=frame, interpolation=cv2.cv.CV_INTER_LINEAR)
 
-        #cv2.imwrite("{0}.jpg".format(frame_number), frame)
+        # cv2.imwrite("{0}.jpg".format(frame_number), frame)
 
         detect_flag, detect_size = object_filter.detect(frame)
         if detect_flag is False:
@@ -67,6 +68,7 @@ if __name__ == "__main__":
             res, frame = cap.read()
             if res is False:
                 break
+            cv2.resize(src=frame, dsize=(608, 608), dst=frame, interpolation=cv2.cv.CV_INTER_LINEAR)
 
             #cv2.imwrite("{0}.jpg".format(shot_end), frame)
 

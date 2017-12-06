@@ -157,15 +157,21 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     free_ptrs(cast(probs, POINTER(c_void_p)), num)
     return res
 
-def cv2_to_image(img):
-    w = img.shape[1]
-    h = img.shape[0]
-    c = img.shape[2]
+
+def cv2_to_image(image):
+    w = image.shape[1]
+    h = image.shape[0]
+    c = image.shape[2]
+
+    img = image.transpose((-1, 0, 1))
+    img = img.flatten()
+    img = img / 255.
+
     im = make_image(w, h, c)
-    for i in range(h):
-        for k in range(c):
-            for j in range(w):
-                im.data[k * w * h + i * w + j] = img[i][j][k]/255.
+
+    for i in range(w * h * c):
+        im.data[i] = img[i]
+
     return im
 
 if __name__ == "__main__":
