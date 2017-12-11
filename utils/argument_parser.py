@@ -54,7 +54,13 @@ class ActionGPU(CustomAction):
         setattr(namespace, self.dest, values)
 
 
+class ActionMethod(CustomAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        pass
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('video_name', action=ActionFile, help='Video file name', type=str, metavar='video_name')
 parser.add_argument('-g', action=ActionGPU, dest='gpu_id', help='GPU ID', type=int, metavar="gpu_id")
+parser.add_argument('-m', action=ActionMethod, dest='method', help='', type=int, metavar="")
 args = parser.parse_args()
