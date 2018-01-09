@@ -1,5 +1,6 @@
 import caffe
 import numpy as np
+from skimage import transform
 import os
 
 import cv2
@@ -58,13 +59,14 @@ def top_5(image_id, labels, out, top_k):
 
 
 def detect(image, net):
-    img = cv2.resize(image, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    img = img.astype(np.float32)
+    img = img / 255.
+    img = transform.resize(img, [224, 224])
+    img = img.astype(np.uint8)
     img = img.transpose(-1, 0, 1)
     net.forward_all(data=np.asarray([img]))
-    # img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    #img = imresize(img, [224, 224])
-    # net.forward_all(data=np.asarray([img.transpose(2, 0, 1)]))
-    #prob = net.blobs['prob'].data[0]
+
     prob = net.blobs['prob'].data[0]
     return np.reshape(prob, (1, prob.shape[0]))
 
