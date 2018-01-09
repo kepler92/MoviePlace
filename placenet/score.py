@@ -59,7 +59,7 @@ def top_5(image_id, labels, out, top_k):
 
 
 def detect(image, net):
-    img = cv2.resize(image, (224, 224))
+    img = cv2.resize(image, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
     img = img.transpose(-1, 0, 1)
     net.forward_all(data=np.asarray([img]))
     # img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
