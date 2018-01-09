@@ -15,7 +15,9 @@ os.chdir(os.path.dirname( os.path.abspath( __file__ ) ))
 
 
 MODEL_FILE = './deploy.prototxt'
-PRETRAINED = './fc7_100_iter_300000.caffemodel'
+PRETRAINED = './vgg16_places365.caffemodel'
+#MODEL_FILE = './deploy_381.prototxt'
+#PRETRAINED = './fc7_100_iter_300000.caffemodel'
 imagenet_labels_filename = './categories_places365.txt'
 
 
@@ -57,9 +59,12 @@ def top_5(image_id, labels, out, top_k):
 
 
 def detect(image, net):
-    img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    img = imresize(img, [224, 224])
-    net.forward_all(data=np.asarray([img.transpose(2, 0, 1)]))
+    img = cv2.resize(image, (224, 224))
+    img = img.transpose(-1, 0, 1)
+    net.forward_all(data=np.asarray([img]))
+    # img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #img = imresize(img, [224, 224])
+    # net.forward_all(data=np.asarray([img.transpose(2, 0, 1)]))
     #prob = net.blobs['prob'].data[0]
     prob = net.blobs['prob'].data[0]
     return np.reshape(prob, (1, prob.shape[0]))
