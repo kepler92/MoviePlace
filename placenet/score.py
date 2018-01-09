@@ -1,6 +1,5 @@
 import caffe
 import numpy as np
-from scipy.misc import imresize
 import os
 
 import cv2
@@ -82,7 +81,8 @@ def __detect(image_id, net, iamge_id_path, image_id_txt):
 
     img = cv2.imread(image_id)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = imresize(img, [224, 224])
+    img = cv2.resize(img, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
+    #img = imresize(img, [224, 224])
 
     print "img = ", img.shape
 
