@@ -2,7 +2,7 @@ from __future__ import print_function
 from utils.argument_parser import *
 
 from core import shot, objects, place
-from utils import export_ass
+from utils import export_ass, compression
 
 import cv2
 try:
@@ -43,11 +43,10 @@ if __name__ == "__main__":
         frame_second = frame_number / video_fps
 
         res, frame = cap.read()
+        frame = compression.jpeg(frame)
         if res is False or frame_number == frame_count:
             break
-        cv2.resize(src=frame, dsize=(608, 608), dst=frame, interpolation=cv2.cv.CV_INTER_LINEAR)
 
-        # cv2.imwrite("{0}.jpg".format(frame_number), frame)
         print(frame_number)
 
         detect_flag, detect_size = object_filter.detect(frame)

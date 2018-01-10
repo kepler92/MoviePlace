@@ -41,6 +41,7 @@ if __name__ == "__main__":
     place_classifier = place.PlaceShot()
 
     place_ass = export_ass.ExportAss(video_name)
+    cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, 7460)
 
     while cap.isOpened():
         frame_number = int(cap.get(cv2.cv.CV_CAP_PROP_POS_FRAMES))
@@ -51,38 +52,8 @@ if __name__ == "__main__":
         if res is False or frame_number == frame_count:
             break
 
-        detect_flag, detect_size = object_filter.detect(frame)
-        if detect_flag is False:
-            place_result_idx, place_result_prob = place_classifier.classifier(frame)
+        print (frame_number)
+        place_result_idx, place_result_prob = place_classifier.classifier(frame, log=True)
 
-        frame_next = int(round(video_second * frame_move))
-        cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_next)
-
-        if frame_next >= shot_list[shot_idx]:
-            frame_shot_end = int(shot_list[shot_idx] - 1)
-            cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_shot_end)
-
-            res, frame = cap.read()
-            frame = compression.jpeg(frame)
-            if res is False:
-                break
-
-            detect_flag, detect_size = object_filter.detect(frame)
-            if detect_flag is False:
-                place_result_idx, place_result_prob = place_classifier.classifier(frame)
-
-            place_result_idx, place_result_prob = place_classifier.estimate()
-            place_result_label = place.get_label_name(place_result_idx)
-
-            shot_start = shot_list[shot_idx - 1] / video_fps
-            shot_end = (shot_list[shot_idx] - 1) / video_fps
-
-            place.print_place(shot_idx, shot_start, shot_end, place_result_idx, place_result_label, place_result_prob)
-            place_ass.write_datum(shot_start, shot_end, place_result_label, place_result_prob)
-
-            if frame_next == shot_list[shot_idx]:
-                video_second += 1
-            shot_idx += 1
-
-        else:
-            video_second += 1
+        if frame_number >= 7465:
+            break

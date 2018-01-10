@@ -1,5 +1,7 @@
 import caffe
 import numpy as np
+import scipy
+from scipy.misc import imresize
 from skimage import transform
 import os
 
@@ -38,31 +40,13 @@ net = caffe.Net(MODEL_FILE, PRETRAINED, caffe.TEST)
 
 os.chdir(rootdir)
 
-#save_top = open("place_scene.txt",'w')
-
-################ save top_5 ####################################
-'''
-def top_5(image_id, labels, out, top_k):
-    for i in range(0, 5):    
-        image_str = "{}".format(image_id)
-        save_top.write(image_str)
-        label_str = ", 0, 0, 0, 0, {}".format(labels[top_k[i]]) #0, 0, 0, 0,#0, 28, 0, 0,#0,56,0,0
-        save_top.write(label_str)
-    	probs = out['prob'][0][top_k[i]]
-   	probs_str = ", {}\n".format(probs)
-    	save_top.write(probs_str)
-    	print ""
-    save_top.write('\n')
-'''
-
-################ extract score ####################################
-
 
 def detect(image, net):
+    image = cv2.resize(image, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     img = img.astype(np.float32)
     img = img / 255.
-    img = transform.resize(img, [224, 224])
+    img = imresize(img, [224, 224])
     img = img.astype(np.uint8)
     img = img.transpose(-1, 0, 1)
     net.forward_all(data=np.asarray([img]))
@@ -71,49 +55,6 @@ def detect(image, net):
     return np.reshape(prob, (1, prob.shape[0]))
 
 
-def __detect(image_id, net, iamge_id_path, image_id_txt):
-    #count = count + 1
-    #fc8_1 = []
-    #save = open(image_id_txt,'w')
-    
-    #for i in range(len(image_id)):
-    #img = caffe.io.load_image(image_id)
-    #img = imresize(img, [224, 224])
-    #img = img.astype(np.uint8)
-
-    img = cv2.imread(image_id)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
-    #img = imresize(img, [224, 224])
-
-    print "img = ", img.shape
-
-    out = net.forward_all(data=np.asarray([img.transpose(2, 0, 1)]))
-
-    #labels = np.loadtxt(imagenet_labels_filename, str, delimiter='\s')
-    #top_k = net.blobs['prob'].data[0].flatten().argsort()[-1: -381 : -1]
-    
-    #fc8 = net.blobs['prob'].data
-    #label_prob = out['prob'][0][top_k[0]]
-    #print label_prob
-    #fc8_1.append(fc8[0])
-    #print "fc8 = ",fc8[0].shape
-    
-    #image_str = "{}".format(image_id)
-    #save.write(image_str)
-    #probs_str = ", {}\n".format(fc8_1)
-    #save.write(probs_str)
-    #save.close()
-
-    #np.save(str(image_id_txt), fc8_1)   #save *.npy
-    #top_5(image_id, labels, out, top_k)  #extract top_5
-
-    return net.blobs['prob'].data[0]
-
-
-################ test_npy  ####################################
-
-################ main ####################################
 if __name__ == "__main__":
     data_set = raw_input("folder : ")
     files = os.listdir(data_set)
