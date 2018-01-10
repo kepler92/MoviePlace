@@ -42,38 +42,17 @@ os.chdir(rootdir)
 
 
 def detect(image, net):
-    image = cv2.resize(image, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
+    #image = cv2.resize(image, dsize=(224, 224), interpolation=cv2.cv.CV_INTER_LINEAR)
     img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     img = img.astype(np.float32)
     img = img / 255.
+    print (img[0][0])
     img = imresize(img, [224, 224])
+    print (img[0][0])
     img = img.astype(np.uint8)
+    print (img[0][0])
     img = img.transpose(-1, 0, 1)
     net.forward_all(data=np.asarray([img]))
 
     prob = net.blobs['prob'].data[0]
     return np.reshape(prob, (1, prob.shape[0]))
-
-
-if __name__ == "__main__":
-    data_set = raw_input("folder : ")
-    files = os.listdir(data_set)
-    files = np.sort(files)
-
-    for cc, x in enumerate(files):
-        print "x = ",x
-        file_id = x.split('.')[0]
-        print "file_id = ",file_id
-        image_path = data_set + '/' + file_id
-        print "image_path =", image_path
-        images =os.listdir(image_path)
-        print "iamges = ",images
-        for c, y in enumerate(images):
-            image_id = y.split('.')[0]
-            image_id_txt = image_path + '/' + image_id #+ '.txt'
-            image_id = image_path + '/' + image_id +'.jpg'
-            print "image_id = ", image_id
-            image_id_path = image_path +  '/'
-            print "image_id_path = ",image_id_path
-            __detect(image_id, net, image_id_path, image_id_txt)
-    

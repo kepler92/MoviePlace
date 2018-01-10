@@ -1,7 +1,7 @@
 from __future__ import print_function
 from utils.argument_parser import *
 
-from core import shot, objects, place
+from core import shot, place
 from utils import export_ass, compression
 
 import cv2
@@ -32,10 +32,10 @@ if __name__ == "__main__":
     video_height = cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)
     video_second = 1
 
-    object_list = ['person']
-    object_filter = objects.Objects(width=video_width, height=video_height,
-                                    object_list=object_list, object_max_threshold=0.35,
-                                    object_sum_number=5, obj_sum_threshold=0.5)
+    # object_list = ['person']
+    # object_filter = objects.Objects(width=video_width, height=video_height,
+    #                                 object_list=object_list, object_max_threshold=0.35,
+    #                                 object_sum_number=5, obj_sum_threshold=0.5)
 
     place_list = []
     place_classifier = place.PlaceShot()
