@@ -48,9 +48,9 @@ if __name__ == "__main__":
         frame_second = frame_number / video_fps
 
         res, frame = cap.read()
-        frame = compression.jpeg(frame)
         if res is False or frame_number == frame_count:
             break
+        frame = compression.jpeg(frame)
 
         print (frame_number)
         place_result_idx, place_result_prob = place_classifier.classifier(frame)
