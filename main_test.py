@@ -53,7 +53,7 @@ if __name__ == "__main__":
             break
 
         print (frame_number)
-        place_result_idx, place_result_prob = place_classifier.classifier(frame, log=True)
+        place_result_idx, place_result_prob = place_classifier.classifier(frame)
 
         if frame_number >= 7465:
             break
